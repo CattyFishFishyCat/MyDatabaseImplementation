@@ -9,12 +9,12 @@ namespace MyDatabaseImplementation.Core
     public class Database : IDatabase
     {
         private readonly DatabaseFileInformation dbDirectory;
-        private readonly ILogger logger;
+        private readonly IFatalLogger fatalLogger;
         private readonly IDatabaseFileService databaseFileService;
 
-        public Database(string dbFile, ILogger logger, IDatabaseFileService databaseFileService)
+        public Database(string dbFile, IFatalLogger fatalLogger, IDatabaseFileService databaseFileService)
         {
-            this.logger = logger;
+            this.fatalLogger = fatalLogger;
             this.databaseFileService = databaseFileService;
 
             try
@@ -23,7 +23,7 @@ namespace MyDatabaseImplementation.Core
             }
             catch(Exception)
             {
-                this.logger.Fatal($"Unable to parse DB file name {dbFile}");
+                this.fatalLogger.Log($"Unable to parse DB file name {dbFile}");
                 throw;
             }
 
@@ -35,7 +35,7 @@ namespace MyDatabaseImplementation.Core
             }
             catch(Exception)
             {
-                this.logger.Fatal($"Unable to read or write file {this.dbDirectory.FullPath}");
+                this.fatalLogger.Log($"Unable to read or write file {this.dbDirectory.FullPath}");
                 throw;
             }
         }

@@ -2,7 +2,6 @@
 using MyDatabaseImplementation.Core.Models;
 using MyDatabaseImplementation.Utilities.Logger;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -10,11 +9,13 @@ namespace MyDatabaseImplementation.Utilities.FileHandlers.Database
 {
     public class DatabaseFileService : IDatabaseFileService
     {
-        private readonly ILogger logger;
+        private readonly IFatalLogger fatalLogger;
+        private readonly IInformationLogger informationLogger;
 
-        public DatabaseFileService(ILogger logger)
+        public DatabaseFileService(IFatalLogger fatalLogger, IInformationLogger informationLogger)
         {
-            this.logger = logger;
+            this.fatalLogger = fatalLogger;
+            this.informationLogger = informationLogger;
         }
 
         public DatabaseFileInformation GetDbFileInformation(string dbFile)
@@ -31,12 +32,12 @@ namespace MyDatabaseImplementation.Utilities.FileHandlers.Database
             }
             catch (DbDirectoryNotFoundException)
             {
-                this.logger.Fatal($"Directory not found for {dbFile}.");
+                this.fatalLogger.Log($"Directory not found for {dbFile}.");
                 throw;
             }
             catch (DbFileNameNotFoundException)
             {
-                this.logger.Fatal($"File name not found for {dbFile}.");
+                this.fatalLogger.Log($"File name not found for {dbFile}.");
                 throw;
             }
         }
@@ -65,7 +66,7 @@ namespace MyDatabaseImplementation.Utilities.FileHandlers.Database
             {
                 if (fileStream.Length == 0)
                 {
-                    this.logger.Information($"{fileInformation.FullPath} does not exist. It will be created.");
+                    this.informationLogger.Log($"{fileInformation.FullPath} does not exist. It will be created.");
                     string databaseInformationJson = JsonConvert.SerializeObject(databaseInformation);
                     byte[] databaseInformationBytes = Encoding.ASCII.GetBytes(databaseInformationJson);
                     fileStream.Write(databaseInformationBytes);
