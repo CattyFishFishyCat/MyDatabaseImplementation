@@ -2,13 +2,13 @@
 
 namespace MyDatabaseImplementation.Core.Models
 {
-    public class DatabaseFileInformation
+    public class FileInformation
     {
         public string Directory { get; }
         public string FileName { get; }
         public string FullPath { get; }
 
-        public DatabaseFileInformation(string directory, string fileName)
+        public FileInformation(string directory, string fileName)
         {
             this.Directory = directory;
             this.FileName = fileName;

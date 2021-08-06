@@ -8,7 +8,7 @@ namespace MyDatabaseImplementation.Core
 {
     public class Database : IDatabase
     {
-        private readonly DatabaseFileInformation dbDirectory;
+        private readonly FileInformation dbDirectory;
         private readonly IFatalLogger fatalLogger;
         private readonly IDatabaseFileService databaseFileService;
 
