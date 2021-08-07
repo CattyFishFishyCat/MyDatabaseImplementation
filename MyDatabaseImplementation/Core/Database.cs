@@ -8,22 +8,27 @@ namespace MyDatabaseImplementation.Core
 {
     public class Database : IDatabase
     {
-        private readonly FileInformation dbDirectory;
         private readonly IFatalLogger fatalLogger;
         private readonly IDatabaseFileService databaseFileService;
+        private readonly string dbFile;
+        private FileInformation? dbFileInformation;
 
         public Database(string dbFile, IFatalLogger fatalLogger, IDatabaseFileService databaseFileService)
         {
             this.fatalLogger = fatalLogger;
             this.databaseFileService = databaseFileService;
+            this.dbFile = dbFile;
+        }
 
+        public void CreateDatabaseIfNeeded()
+        {
             try
             {
-                this.dbDirectory = this.databaseFileService.GetDbFileInformation(dbFile);
+                this.dbFileInformation = this.databaseFileService.GetDbFileInformation(this.dbFile);
             }
-            catch(Exception)
+            catch (Exception)
             {
-                this.fatalLogger.Log($"Unable to parse DB file name {dbFile}");
+                this.fatalLogger.Log($"Unable to parse DB file name {this.dbFile}");
                 throw;
             }
 
@@ -31,11 +36,11 @@ namespace MyDatabaseImplementation.Core
 
             try
             {
-                this.databaseFileService.CreateFileIfNeeded(this.dbDirectory, databaseInformation);
+                this.databaseFileService.CreateFileIfNeeded(this.dbFileInformation, databaseInformation);
             }
-            catch(Exception)
+            catch (Exception)
             {
-                this.fatalLogger.Log($"Unable to read or write file {this.dbDirectory.FullPath}");
+                this.fatalLogger.Log($"Unable to read or write file {this.dbFileInformation.FullPath}");
                 throw;
             }
         }

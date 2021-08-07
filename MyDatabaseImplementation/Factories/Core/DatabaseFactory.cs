@@ -15,6 +15,13 @@ namespace MyDatabaseImplementation.Factories.Core
             this.databaseFileService = databaseFileService;
         }
 
+        public IDatabase GetAndCreateDatabase(string dbFile)
+        {
+            IDatabase database = this.GetDatabase(dbFile);
+            database.CreateDatabaseIfNeeded();
+            return database;
+        }
+
         public IDatabase GetDatabase(string dbFile)
         {
             return new Database(dbFile, this.fatalLogger, this.databaseFileService);
