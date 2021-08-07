@@ -1,6 +1,8 @@
 ﻿using MyDatabaseImplementation.Core;
+using MyDatabaseImplementation.Core.Models;
 using MyDatabaseImplementation.Utilities.FileHandlers.Database;
 using MyDatabaseImplementation.Utilities.Logger;
+using System;
 
 namespace MyDatabaseImplementation.Factories.Core
 {
@@ -24,7 +26,16 @@ namespace MyDatabaseImplementation.Factories.Core
 
         public IDatabase GetDatabase(string dbFile)
         {
-            return new Database(dbFile, this.fatalLogger, this.databaseFileService);
+            try
+            {
+                FileInformation dbFileInformation = this.databaseFileService.GetDbFileInformation(dbFile);
+                return new Database(dbFileInformation, this.fatalLogger, this.databaseFileService);
+            }
+            catch (Exception)
+            {
+                this.fatalLogger.Log($"Unable to parse DB file name {dbFile}");
+                throw;
+            }
         }
     }
 }

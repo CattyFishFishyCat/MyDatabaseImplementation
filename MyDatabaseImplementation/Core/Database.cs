@@ -10,28 +10,17 @@ namespace MyDatabaseImplementation.Core
     {
         private readonly IFatalLogger fatalLogger;
         private readonly IDatabaseFileService databaseFileService;
-        private readonly string dbFile;
-        private FileInformation? dbFileInformation;
+        private readonly FileInformation dbFileInformation;
 
-        public Database(string dbFile, IFatalLogger fatalLogger, IDatabaseFileService databaseFileService)
+        public Database(FileInformation dbFileInformation, IFatalLogger fatalLogger, IDatabaseFileService databaseFileService)
         {
             this.fatalLogger = fatalLogger;
             this.databaseFileService = databaseFileService;
-            this.dbFile = dbFile;
+            this.dbFileInformation = dbFileInformation;
         }
 
         public void CreateDatabaseIfNeeded()
         {
-            try
-            {
-                this.dbFileInformation = this.databaseFileService.GetDbFileInformation(this.dbFile);
-            }
-            catch (Exception)
-            {
-                this.fatalLogger.Log($"Unable to parse DB file name {this.dbFile}");
-                throw;
-            }
-
             DatabaseInformationModel databaseInformation = new DatabaseInformationModel("0.1.0", new List<SchemaInformationModel>());
 
             try
